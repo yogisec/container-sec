@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"reflect"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -226,19 +225,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		for _, a := range as {
-			fmt.Println(a)
-		}
 
 		mac1 := as[0]
-		fmt.Printf("Firt Mac: ")
-		fmt.Println(mac1)
-		fmt.Println(reflect.TypeOf(mac1))
+		// fmt.Println(reflect.TypeOf(mac1))
 		aid := sha256.Sum256([]byte(mac1))
 		fmt.Printf("AID: %x\n", aid)
-
-		L.Dothing()
-
 		fmt.Printf("All Done")
 
 	}

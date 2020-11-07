@@ -16,7 +16,7 @@ import (
 
 // GetContainerData pulls configuration data for the running containers
 func GetContainerData(containerID string) string {
-	fmt.Printf("Container ID: " + containerID)
+	fmt.Println("Container ID: " + containerID)
 
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -110,8 +110,6 @@ func GetContainerData(containerID string) string {
 	workingDir := containerInfo.Config.WorkingDir
 	fmt.Printf("Working Dir: ")
 	fmt.Println(workingDir)
-
-	fmt.Println("")
 
 	// Logs
 	fmt.Println("")
