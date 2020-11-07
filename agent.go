@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"reflect"
 	"strconv"
 
 	"github.com/docker/docker/api/types"
@@ -234,12 +235,12 @@ func main() {
 			fmt.Println(a)
 		}
 
-		mac1 := as[0].String()
+		mac1 := as[0]
 		fmt.Printf("Firt Mac: ")
 		fmt.Println(mac1)
 		aid := sha256.Sum256([]byte(mac1))
 		fmt.Printf("AID: ")
-		fmt.Println(aid)
+		fmt.Println(reflect.TypeOf(aid))
 
 	}
 }
