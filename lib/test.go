@@ -22,8 +22,14 @@ type containerData struct {
 	Pid           int      `json:"Pid"`
 	Privleged     bool     `json:"Privleged"`
 	CapAdd        []string `json:"CapAdd"`
+	CapDrop       []string `json:"CapDrop"`
 	Image         string   `json:"ImageName"`
+	ImageHash     string   `json:"ImageHash"`
 	RunCommand    []string `json:"RunCommand"`
+	Command       []string `json:"Command"`
+	EntryPoint    []string `json:"EntryPoint"`
+	TTY           bool     `json:"TTY"`
+	CreatedDate   string   `json:"CreatedDate"`
 }
 
 // GetContainerData pulls configuration data for the running containers
@@ -50,6 +56,15 @@ func GetContainerData(containerID string) string {
 	currentStatus := containerInfo.State.Status      // Get the containers current status
 	pid := containerInfo.State.Pid                   // Host Process ID for container
 	privleged := containerInfo.HostConfig.Privileged // is the container running with --priv
+	capAdd := containerInfo.HostConfig.CapAdd        // Any added capabilities?
+	capDrop := containerInfo.HostConfig.CapDrop      // Any dropped capabilities?
+	configImage := containerInfo.Config.Image        // Container Image
+	imageHash := containerInfo.Image                 // Image hash
+	runCommand := containerInfo.Args                 // Run command
+	command := containerInfo.Config.Cmd              // Config Command
+	entryPoint := containerInfo.Config.Entrypoint    // Container entrypoint
+	tty := containerInfo.Config.Tty                  // tty
+	createdDate := containerInfo.Created             // Container launch date/time
 
 	portBindings := containerInfo.HostConfig.PortBindings
 	fmt.Printf("Port Bindings: ")
@@ -61,14 +76,6 @@ func GetContainerData(containerID string) string {
 
 	// fmt.Println("Is privileged: " + strconv.FormatBool(privleged))
 
-	capAdd := containerInfo.HostConfig.CapAdd
-	fmt.Printf("CapAdd: ")
-	fmt.Println(capAdd)
-
-	capDrop := containerInfo.HostConfig.CapDrop
-	fmt.Printf("CappDrop: ")
-	fmt.Println(capDrop)
-
 	binds := containerInfo.HostConfig.Binds
 	fmt.Printf("Binds?: ")
 	fmt.Println(binds)
@@ -76,33 +83,6 @@ func GetContainerData(containerID string) string {
 	mounts := containerInfo.Mounts
 	fmt.Printf("Mounts: ")
 	fmt.Println(mounts)
-
-	imageHash := containerInfo.Image
-	fmt.Println("Image Hash: " + imageHash)
-
-	configImage := containerInfo.Config.Image
-	fmt.Printf("Container Image: ")
-	fmt.Println(configImage)
-
-	runCommand := containerInfo.Args
-	fmt.Printf("Run Command: ")
-	fmt.Println(runCommand)
-
-	command := containerInfo.Config.Cmd
-	fmt.Printf("Command: ")
-	fmt.Println(command)
-
-	entryPoint := containerInfo.Config.Entrypoint
-	fmt.Printf("Entrypoint: ")
-	fmt.Println(entryPoint)
-
-	tty := containerInfo.Config.Tty
-	fmt.Printf("TTY: ")
-	fmt.Println(tty)
-
-	createdDate := containerInfo.Created
-	fmt.Printf("Container Created: ")
-	fmt.Println(createdDate)
 
 	workingDir := containerInfo.Config.WorkingDir
 	fmt.Printf("Working Dir: ")
@@ -121,7 +101,11 @@ func GetContainerData(containerID string) string {
 	if err != nil {
 		panic(err)
 	}
-	io.Copy(os.Stdout, out)
+	logs, outlogs := io.Copy(os.Stdout, out)
+
+	fmt.Println(logs)
+	fmt.Println("OutLogs: ")
+	fmt.Println(outlogs)
 
 	/*
 		type ContainerData struct {
@@ -138,9 +122,15 @@ func GetContainerData(containerID string) string {
 		Pid:           pid,
 		Privleged:     privleged,
 		CapAdd:        capAdd,
+		CapDrop:       capDrop,
 		CurrentStatus: currentStatus,
 		Image:         configImage,
+		ImageHash:     imageHash,
 		RunCommand:    runCommand,
+		Command:       command,
+		EntryPoint:    entryPoint,
+		TTY:           tty,
+		CreatedDate:   createdDate,
 	}
 
 	e, err := json.Marshal(contData)
