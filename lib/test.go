@@ -1,14 +1,13 @@
 package lib
 
 import (
+	"bytes"
 	"context"
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"io"
-	"os"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -30,6 +29,8 @@ type containerData struct {
 	EntryPoint    []string `json:"EntryPoint"`
 	TTY           bool     `json:"TTY"`
 	CreatedDate   string   `json:"CreatedDate"`
+	WorkingDir    string   `json:"WorkingDir"`
+	Logs          string   `json:"Logs"`
 }
 
 // GetContainerData pulls configuration data for the running containers
@@ -65,6 +66,26 @@ func GetContainerData(containerID string) string {
 	entryPoint := containerInfo.Config.Entrypoint    // Container entrypoint
 	tty := containerInfo.Config.Tty                  // tty
 	createdDate := containerInfo.Created             // Container launch date/time
+	workingDir := containerInfo.Config.WorkingDir    // Container working directory
+
+	// Pull Container Logs
+	logOptions := types.ContainerLogsOptions{
+		Follow:     false,
+		ShowStdout: true,
+		ShowStderr: true,
+	}
+
+	buf := new(bytes.Buffer)
+	out, err := cli.ContainerLogs(ctx, containerID, logOptions)
+	if err != nil {
+		panic(err)
+	}
+	// io.Copy(os.Stdout, out)
+
+	buf.ReadFrom(out)
+	logString := buf.String()
+
+	fmt.Println(logString)
 
 	portBindings := containerInfo.HostConfig.PortBindings
 	fmt.Printf("Port Bindings: ")
@@ -84,29 +105,6 @@ func GetContainerData(containerID string) string {
 	fmt.Printf("Mounts: ")
 	fmt.Println(mounts)
 
-	workingDir := containerInfo.Config.WorkingDir
-	fmt.Printf("Working Dir: ")
-	fmt.Println(workingDir)
-
-	// Logs
-	fmt.Println("")
-	fmt.Println("---- Container LOGS ----")
-	logOptions := types.ContainerLogsOptions{
-		Follow:     false,
-		ShowStdout: true,
-		ShowStderr: true,
-	}
-
-	out, err := cli.ContainerLogs(ctx, containerID, logOptions)
-	if err != nil {
-		panic(err)
-	}
-	logs, outlogs := io.Copy(os.Stdout, out)
-
-	fmt.Println(logs)
-	fmt.Println("OutLogs: ")
-	fmt.Println(outlogs)
-
 	/*
 		type ContainerData struct {
 		ContainerName string `json:"containername"`
@@ -115,6 +113,7 @@ func GetContainerData(containerID string) string {
 		Image string `json:"imagename"`
 		}
 	*/
+
 	contData := &containerData{
 		ContainerName: friendlyName,
 		Platform:      platform,
@@ -131,6 +130,8 @@ func GetContainerData(containerID string) string {
 		EntryPoint:    entryPoint,
 		TTY:           tty,
 		CreatedDate:   createdDate,
+		WorkingDir:    workingDir,
+		Logs:          logString,
 	}
 
 	e, err := json.Marshal(contData)
