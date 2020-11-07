@@ -240,8 +240,7 @@ func main() {
 		fmt.Println(mac1)
 		fmt.Println(reflect.TypeOf(mac1))
 		aid := sha256.Sum256([]byte(mac1))
-		fmt.Printf("AID: ")
-		fmt.Println(reflect.TypeOf(aid))
+		fmt.Printf("AID: %x\n", aid)
 
 		s := as[0]
 		sha256 := sha256.Sum256([]byte(s))
