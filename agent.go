@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
+	"net"
 	"os"
 	"strconv"
 
@@ -25,6 +27,21 @@ import (
   https://pkg.go.dev/github.com/google/uuid
 
 */
+
+func getMacAddr() ([]string, error) {
+	ifas, err := net.Interfaces()
+	if err != nil {
+		return nil, err
+	}
+	var as []string
+	for _, ifa := range ifas {
+		a := ifa.HardwareAddr.String()
+		if a != "" {
+			as = append(as, a)
+		}
+	}
+	return as, nil
+}
 
 func main() {
 	ctx := context.Background()
@@ -206,5 +223,15 @@ func main() {
 		fmt.Println("sys:", sys)
 		BB := godmi.GetBaseboardInformation()
 		fmt.Println("BB:", BB)
+
+		// Get Mac Address
+		as, err := getMacAddr()
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, a := range as {
+			fmt.Println(a)
+		}
+
 	}
 }
