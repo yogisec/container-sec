@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -13,6 +14,13 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
+
+type containerData struct {
+	ContainerName string `json:"containername"`
+	Platform      string `json:"platform"`
+	CurrentStatus string `json:"status"`
+	Image         string `json:"imagename"`
+}
 
 // GetContainerData pulls configuration data for the running containers
 func GetContainerData(containerID string) string {
@@ -125,6 +133,22 @@ func GetContainerData(containerID string) string {
 		panic(err)
 	}
 	io.Copy(os.Stdout, out)
+
+	/*
+		type ContainerData struct {
+		ContainerName string `json:"containername"`
+		Platform string `json:"platform"`
+		CurrentStatus string `json:"status"`
+		Image string `json:"imagename"`
+		}
+	*/
+	contData := &containerData{ContainerName: friendlyName, Platform: platform, CurrentStatus: currentStatus, Image: configImage}
+
+	e, err := json.Marshal(contData)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(e))
 
 	return containerID
 }
