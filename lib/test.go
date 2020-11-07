@@ -80,12 +80,11 @@ func GetContainerData(containerID string) string {
 	if err != nil {
 		panic(err)
 	}
-	// io.Copy(os.Stdout, out)
 
 	buf.ReadFrom(out)
 	logString := buf.String()
 
-	fmt.Println(logString)
+	// fmt.Println(logString)
 
 	portBindings := containerInfo.HostConfig.PortBindings
 	fmt.Printf("Port Bindings: ")
