@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -18,7 +17,11 @@ import (
 type containerData struct {
 	ContainerName string   `json:"ContainerName"`
 	Platform      string   `json:"Platform"`
+	AppArmor      string   `json:"AppArmor"`
 	CurrentStatus string   `json:"Status"`
+	Pid           int      `json:"Pid"`
+	Privleged     bool     `json:"Privleged"`
+	CapAdd        []string `json:"CapAdd"`
 	Image         string   `json:"ImageName"`
 	RunCommand    []string `json:"RunCommand"`
 }
@@ -41,22 +44,12 @@ func GetContainerData(containerID string) string {
 
 	// Container Attrs
 	fmt.Println("---- Container ATTRS ----")
-	friendlyName := containerInfo.Name
-	fmt.Printf("Container Name: ")
-	fmt.Println(friendlyName)
-
-	platform := containerInfo.Platform
-	fmt.Printf("Platform: ")
-	fmt.Println(platform)
-
-	apparmor := containerInfo.AppArmorProfile
-	fmt.Printf("AppArmor Profile: ")
-	fmt.Println(apparmor)
-
-	stateRunning := containerInfo.State.Running
-	currentStatus := containerInfo.State.Status
-	fmt.Println("Is running: " + strconv.FormatBool(stateRunning))
-	fmt.Println("Current Status: " + currentStatus)
+	friendlyName := containerInfo.Name               // Container Friendly Name
+	platform := containerInfo.Platform               // Linux, windows?
+	apparmor := containerInfo.AppArmorProfile        // App Armor info
+	currentStatus := containerInfo.State.Status      // Get the containers current status
+	pid := containerInfo.State.Pid                   // Host Process ID for container
+	privleged := containerInfo.HostConfig.Privileged // is the container running with --priv
 
 	portBindings := containerInfo.HostConfig.PortBindings
 	fmt.Printf("Port Bindings: ")
@@ -66,12 +59,7 @@ func GetContainerData(containerID string) string {
 	fmt.Printf("Port Info: ")
 	fmt.Println(portInfo)
 
-	pid := containerInfo.State.Pid
-	fmt.Printf("Container PID: ")
-	fmt.Println(pid)
-
-	privleged := containerInfo.HostConfig.Privileged
-	fmt.Println("Is privileged: " + strconv.FormatBool(privleged))
+	// fmt.Println("Is privileged: " + strconv.FormatBool(privleged))
 
 	capAdd := containerInfo.HostConfig.CapAdd
 	fmt.Printf("CapAdd: ")
@@ -146,6 +134,10 @@ func GetContainerData(containerID string) string {
 	contData := &containerData{
 		ContainerName: friendlyName,
 		Platform:      platform,
+		AppArmor:      apparmor,
+		Pid:           pid,
+		Privleged:     privleged,
+		CapAdd:        capAdd,
 		CurrentStatus: currentStatus,
 		Image:         configImage,
 		RunCommand:    runCommand,
