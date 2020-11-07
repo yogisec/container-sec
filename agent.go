@@ -234,7 +234,7 @@ func main() {
 			fmt.Println(a)
 		}
 
-		mac1 := as[0]
+		mac1 := as[0].String()
 		fmt.Printf("Firt Mac: ")
 		fmt.Println(mac1)
 		aid := sha256.Sum256([]byte(mac1))
