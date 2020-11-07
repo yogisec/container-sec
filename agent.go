@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
+	"os"
 	"strconv"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
+//  go get github.com/docker/docker/client
 // https://godoc.org/github.com/docker/docker/client
 // https://pkg.go.dev/github.com/docker/docker/client
 
@@ -98,6 +101,18 @@ func main() {
 			panic(err)
 		}
 		fmt.Println(top)
+
+		logOptions := types.ContainerLogsOptions{
+			Follow:     false,
+			ShowStdout: true,
+			ShowStderr: true,
+		}
+
+		out, err := cli.ContainerLogs(ctx, container.ID, logOptions)
+		if err != nil {
+			panic(err)
+		}
+		io.Copy(os.Stdout, out)
 
 		/*
 			logsOptions := cli.ContainerLogs{
