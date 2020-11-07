@@ -61,6 +61,14 @@ func main() {
 		fmt.Printf("Container Name: ")
 		fmt.Println(friendlyName)
 
+		platform := containerInfo.Platform
+		fmt.Printf("Platform: ")
+		fmt.Println(platform)
+
+		apparmor := containerInfo.AppArmorProfile
+		fmt.Prinf("AppArmor Profile: ")
+		fmt.Println(apparmor)
+
 		stateRunning := containerInfo.State.Running
 		currentStatus := containerInfo.State.Status
 		fmt.Println("Is running: " + strconv.FormatBool(stateRunning))
@@ -69,6 +77,10 @@ func main() {
 		portBindings := containerInfo.HostConfig.PortBindings
 		fmt.Printf("Port Bindings: ")
 		fmt.Println(portBindings)
+
+		portInfo := containerInfo.NetworkSettings.Ports
+		fmt.Printf("Port Info: ")
+		fmt.Println(portInfo)
 
 		pid := containerInfo.State.Pid
 		fmt.Printf("Container PID: ")
@@ -105,8 +117,12 @@ func main() {
 		fmt.Println(runCommand)
 
 		command := containerInfo.Config.Cmd
-		fmt.Printf("Entry Command: ")
+		fmt.Printf("Command: ")
 		fmt.Println(command)
+
+		entryPoint := containerInfo.Config.Entrypoint
+		fmt.Printf("Entrypoint: ")
+		fmt.Println(entryPoint)
 
 		tty := containerInfo.Config.Tty
 		fmt.Printf("TTY: ")
