@@ -9,11 +9,22 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"github.com/ochapman/godmi"
 )
 
-//  go get github.com/docker/docker/client
-// https://godoc.org/github.com/docker/docker/client
-// https://pkg.go.dev/github.com/docker/docker/client
+/*
+
+  go get github.com/docker/docker/client
+
+  Client Documentation:
+  https://pkg.go.dev/github.com/docker/docker/client
+  Type Documentation:
+  https://pkg.go.dev/github.com/docker/docker/api/types
+
+  UUID Documentation:
+  https://pkg.go.dev/github.com/google/uuid
+
+*/
 
 func main() {
 	ctx := context.Background()
@@ -187,5 +198,13 @@ func main() {
 			}
 			fmt.Println(containerLogs)
 		*/
+
+		// UUID
+		BS := godmi.GetBIOSInformation()
+		fmt.Println("BS:", BS)
+		sys := godmi.GetSystemInformation()
+		fmt.Println("sys:", sys)
+		BB := godmi.GetBaseboardInformation()
+		fmt.Println("BB:", BB)
 	}
 }
