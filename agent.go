@@ -4,12 +4,9 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"io"
 	"log"
 	"net"
-	"os"
 	"reflect"
-	"strconv"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -60,115 +57,119 @@ func main() {
 
 	for _, container := range containers {
 
-		fmt.Println("---- Container HOSTCONFIG ----")
-		fmt.Println(container.HostConfig)
-		fmt.Println("")
+		fmt.Println("######## Looping Through Containers Pulling Data #########")
+		containerDetails := GetContainerData(container.ID)
 
-		fmt.Println("---- Container ID ----")
-		fmt.Println(container.ID)
-		fmt.Println("")
+		/*
+			fmt.Println("---- Container HOSTCONFIG ----")
+			fmt.Println(container.HostConfig)
+			fmt.Println("")
 
-		fmt.Println("---- Container DIFF ----")
-		// Pull the diff of the file system
-		diffResult, err := cli.ContainerDiff(ctx, container.ID)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(diffResult)
-		fmt.Println("")
+			fmt.Println("---- Container ID ----")
+			fmt.Println(container.ID)
+			fmt.Println("")
 
-		fmt.Println("---- Container INFO ----")
-		// Inspect the container
-		containerInfo, err := cli.ContainerInspect(ctx, container.ID)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(containerInfo)
-		fmt.Println("")
+			fmt.Println("---- Container DIFF ----")
+			// Pull the diff of the file system
+			diffResult, err := cli.ContainerDiff(ctx, container.ID)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(diffResult)
+			fmt.Println("")
 
-		// Container Attrs
-		fmt.Println("---- Container ATTRS ----")
-		friendlyName := containerInfo.Name
-		fmt.Printf("Container Name: ")
-		fmt.Println(friendlyName)
+			fmt.Println("---- Container INFO ----")
+			// Inspect the container
+			containerInfo, err := cli.ContainerInspect(ctx, container.ID)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(containerInfo)
+			fmt.Println("")
 
-		platform := containerInfo.Platform
-		fmt.Printf("Platform: ")
-		fmt.Println(platform)
+			// Container Attrs
+			fmt.Println("---- Container ATTRS ----")
+			friendlyName := containerInfo.Name
+			fmt.Printf("Container Name: ")
+			fmt.Println(friendlyName)
 
-		apparmor := containerInfo.AppArmorProfile
-		fmt.Printf("AppArmor Profile: ")
-		fmt.Println(apparmor)
+			platform := containerInfo.Platform
+			fmt.Printf("Platform: ")
+			fmt.Println(platform)
 
-		stateRunning := containerInfo.State.Running
-		currentStatus := containerInfo.State.Status
-		fmt.Println("Is running: " + strconv.FormatBool(stateRunning))
-		fmt.Println("Current Status: " + currentStatus)
+			apparmor := containerInfo.AppArmorProfile
+			fmt.Printf("AppArmor Profile: ")
+			fmt.Println(apparmor)
 
-		portBindings := containerInfo.HostConfig.PortBindings
-		fmt.Printf("Port Bindings: ")
-		fmt.Println(portBindings)
+			stateRunning := containerInfo.State.Running
+			currentStatus := containerInfo.State.Status
+			fmt.Println("Is running: " + strconv.FormatBool(stateRunning))
+			fmt.Println("Current Status: " + currentStatus)
 
-		portInfo := containerInfo.NetworkSettings.Ports
-		fmt.Printf("Port Info: ")
-		fmt.Println(portInfo)
+			portBindings := containerInfo.HostConfig.PortBindings
+			fmt.Printf("Port Bindings: ")
+			fmt.Println(portBindings)
 
-		pid := containerInfo.State.Pid
-		fmt.Printf("Container PID: ")
-		fmt.Println(pid)
+			portInfo := containerInfo.NetworkSettings.Ports
+			fmt.Printf("Port Info: ")
+			fmt.Println(portInfo)
 
-		privleged := containerInfo.HostConfig.Privileged
-		fmt.Println("Is privileged: " + strconv.FormatBool(privleged))
+			pid := containerInfo.State.Pid
+			fmt.Printf("Container PID: ")
+			fmt.Println(pid)
 
-		capAdd := containerInfo.HostConfig.CapAdd
-		fmt.Printf("CapAdd: ")
-		fmt.Println(capAdd)
+			privleged := containerInfo.HostConfig.Privileged
+			fmt.Println("Is privileged: " + strconv.FormatBool(privleged))
 
-		capDrop := containerInfo.HostConfig.CapDrop
-		fmt.Printf("CappDrop: ")
-		fmt.Println(capDrop)
+			capAdd := containerInfo.HostConfig.CapAdd
+			fmt.Printf("CapAdd: ")
+			fmt.Println(capAdd)
 
-		binds := containerInfo.HostConfig.Binds
-		fmt.Printf("Binds?: ")
-		fmt.Println(binds)
+			capDrop := containerInfo.HostConfig.CapDrop
+			fmt.Printf("CappDrop: ")
+			fmt.Println(capDrop)
 
-		mounts := containerInfo.Mounts
-		fmt.Printf("Mounts: ")
-		fmt.Println(mounts)
+			binds := containerInfo.HostConfig.Binds
+			fmt.Printf("Binds?: ")
+			fmt.Println(binds)
 
-		imageHash := containerInfo.Image
-		fmt.Println("Image Hash: " + imageHash)
+			mounts := containerInfo.Mounts
+			fmt.Printf("Mounts: ")
+			fmt.Println(mounts)
 
-		configImage := containerInfo.Config.Image
-		fmt.Printf("Container Image: ")
-		fmt.Println(configImage)
+			imageHash := containerInfo.Image
+			fmt.Println("Image Hash: " + imageHash)
 
-		runCommand := containerInfo.Args
-		fmt.Printf("Run Command: ")
-		fmt.Println(runCommand)
+			configImage := containerInfo.Config.Image
+			fmt.Printf("Container Image: ")
+			fmt.Println(configImage)
 
-		command := containerInfo.Config.Cmd
-		fmt.Printf("Command: ")
-		fmt.Println(command)
+			runCommand := containerInfo.Args
+			fmt.Printf("Run Command: ")
+			fmt.Println(runCommand)
 
-		entryPoint := containerInfo.Config.Entrypoint
-		fmt.Printf("Entrypoint: ")
-		fmt.Println(entryPoint)
+			command := containerInfo.Config.Cmd
+			fmt.Printf("Command: ")
+			fmt.Println(command)
 
-		tty := containerInfo.Config.Tty
-		fmt.Printf("TTY: ")
-		fmt.Println(tty)
+			entryPoint := containerInfo.Config.Entrypoint
+			fmt.Printf("Entrypoint: ")
+			fmt.Println(entryPoint)
 
-		createdDate := containerInfo.Created
-		fmt.Printf("Container Created: ")
-		fmt.Println(createdDate)
+			tty := containerInfo.Config.Tty
+			fmt.Printf("TTY: ")
+			fmt.Println(tty)
 
-		workingDir := containerInfo.Config.WorkingDir
-		fmt.Printf("Working Dir: ")
-		fmt.Println(workingDir)
+			createdDate := containerInfo.Created
+			fmt.Printf("Container Created: ")
+			fmt.Println(createdDate)
 
-		fmt.Println("")
+			workingDir := containerInfo.Config.WorkingDir
+			fmt.Printf("Working Dir: ")
+			fmt.Println(workingDir)
 
+			fmt.Println("")
+		*/
 		// Top
 		/*fmt.Println("")
 		fmt.Println("---- Container TOP ----")
@@ -179,34 +180,34 @@ func main() {
 		}
 		fmt.Println(top)
 		*/
-
-		// Logs
-		fmt.Println("")
-		fmt.Println("---- Container LOGS ----")
-		logOptions := types.ContainerLogsOptions{
-			Follow:     false,
-			ShowStdout: true,
-			ShowStderr: true,
-		}
-
-		out, err := cli.ContainerLogs(ctx, container.ID, logOptions)
-		if err != nil {
-			panic(err)
-		}
-		io.Copy(os.Stdout, out)
-
 		/*
-			logsOptions := cli.ContainerLogs{
-				Container:    container.ID,
-				OutputStream: os.Stdout,
-				ErrorStream:  os.Stderr,
-				Follow:       false,
-				Stdout:       true,
-				Stderr:       true,
+			// Logs
+			fmt.Println("")
+			fmt.Println("---- Container LOGS ----")
+			logOptions := types.ContainerLogsOptions{
+				Follow:     false,
+				ShowStdout: true,
+				ShowStderr: true,
 			}
-			if err := cli.Logs(logsOptions); err != nil {
+
+			out, err := cli.ContainerLogs(ctx, container.ID, logOptions)
+			if err != nil {
 				panic(err)
 			}
+			io.Copy(os.Stdout, out)
+			/*
+			/*
+				logsOptions := cli.ContainerLogs{
+					Container:    container.ID,
+					OutputStream: os.Stdout,
+					ErrorStream:  os.Stderr,
+					Follow:       false,
+					Stdout:       true,
+					Stderr:       true,
+				}
+				if err := cli.Logs(logsOptions); err != nil {
+					panic(err)
+				}
 		*/
 
 		/*
@@ -236,6 +237,8 @@ func main() {
 		fmt.Printf("AID: %x\n", aid)
 
 		L.Dothing()
+
+		fmt.Printf("All Done")
 
 	}
 }
