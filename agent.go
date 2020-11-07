@@ -55,12 +55,20 @@ func main() {
 		fmt.Println(containerInfo)
 		fmt.Println("")
 
-		// Container State
-		fmt.Println("---- Container State ----")
+		// Container Attrs
+		fmt.Println("---- Container ATTRS ----")
 		stateRunning := containerInfo.State.Running
 		currentStatus := containerInfo.State.Status
 		fmt.Println("Is running: " + strconv.FormatBool(stateRunning))
 		fmt.Println("Current Status: " + currentStatus)
+
+		portBindings := containerInfo.HostConfig.PortBindings
+		fmt.Printf("Port Bindings: ")
+		fmt.Println(portBindings)
+
+		pid := containerInfo.State.Pid
+		fmt.Printf("Container PID: ")
+		fmt.Println(pid)
 
 		privleged := containerInfo.HostConfig.Privileged
 		fmt.Println("Is privileged: " + strconv.FormatBool(privleged))
@@ -74,7 +82,12 @@ func main() {
 		fmt.Println(capDrop)
 
 		binds := containerInfo.HostConfig.Binds
+		fmt.Printf("Binds?: ")
 		fmt.Println(binds)
+
+		mounts := containerInfo.Mounts
+		fmt.Printf("Mounts: ")
+		fmt.Println(mounts)
 
 		imageHash := containerInfo.Image
 		fmt.Println("Image Hash: " + imageHash)
@@ -87,7 +100,16 @@ func main() {
 		fmt.Printf("Run Command: ")
 		fmt.Println(runCommand)
 
+		tty := containerInfo.Config.Tty
+		fmt.Printf("TTY: ")
+		fmt.Println(tty)
+
+		createdDate := containerInfo.Created
+		fmt.Printf("Container Created: ")
+		fmt.Println(createdDate)
+
 		workingDir := containerInfo.Config.WorkingDir
+		fmt.Printf("Working Dir: ")
 		fmt.Println(workingDir)
 
 		fmt.Println("")
@@ -102,6 +124,9 @@ func main() {
 		}
 		fmt.Println(top)
 
+		// Logs
+		fmt.Println("")
+		fmt.Println("---- Container LOGS ----")
 		logOptions := types.ContainerLogsOptions{
 			Follow:     false,
 			ShowStdout: true,
