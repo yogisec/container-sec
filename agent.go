@@ -13,6 +13,8 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+
+	L "./lib"
 )
 
 /*
@@ -233,7 +235,7 @@ func main() {
 		aid := sha256.Sum256([]byte(mac1))
 		fmt.Printf("AID: %x\n", aid)
 
-		dothing()
+		L.Dothing()
 
 	}
 }
