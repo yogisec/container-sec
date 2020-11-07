@@ -1,5 +1,3 @@
-package main
-
 import (
 	"crypto/md5"
 	"crypto/sha1"
@@ -7,7 +5,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func dothing() {
 	s := "12:39:50:2d:a3:b1"
 
 	md5 := md5.Sum([]byte(s))

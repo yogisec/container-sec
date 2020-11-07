@@ -13,7 +13,6 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/ochapman/godmi"
 )
 
 /*
@@ -218,14 +217,6 @@ func main() {
 			fmt.Println(containerLogs)
 		*/
 
-		// UUID
-		BS := godmi.GetBIOSInformation()
-		fmt.Println("BS:", BS)
-		sys := godmi.GetSystemInformation()
-		fmt.Println("sys:", sys)
-		BB := godmi.GetBaseboardInformation()
-		fmt.Println("BB:", BB)
-
 		// Get Mac Address
 		as, err := getMacAddr()
 		if err != nil {
@@ -242,10 +233,7 @@ func main() {
 		aid := sha256.Sum256([]byte(mac1))
 		fmt.Printf("AID: %x\n", aid)
 
-		s := as[0]
-		sha256 := sha256.Sum256([]byte(s))
-		fmt.Printf("%x\n", sha256)
-		fmt.Println(reflect.TypeOf(sha256))
+		dothing()
 
 	}
 }
