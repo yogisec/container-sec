@@ -57,6 +57,10 @@ func main() {
 
 		// Container Attrs
 		fmt.Println("---- Container ATTRS ----")
+		friendlyName := containerInfo.Name
+		fmt.Printf("Container Name: ")
+		fmt.Println(friendlyName)
+
 		stateRunning := containerInfo.State.Running
 		currentStatus := containerInfo.State.Status
 		fmt.Println("Is running: " + strconv.FormatBool(stateRunning))
@@ -100,6 +104,10 @@ func main() {
 		fmt.Printf("Run Command: ")
 		fmt.Println(runCommand)
 
+		command := containerInfo.Config.Cmd
+		fmt.Printf("Entry Command: ")
+		fmt.Println(command)
+
 		tty := containerInfo.Config.Tty
 		fmt.Printf("TTY: ")
 		fmt.Println(tty)
@@ -115,7 +123,7 @@ func main() {
 		fmt.Println("")
 
 		// Top
-		fmt.Println("")
+		/*fmt.Println("")
 		fmt.Println("---- Container TOP ----")
 		arguments := []string{"ps"}
 		top, err := cli.ContainerTop(ctx, container.ID, arguments)
@@ -123,6 +131,7 @@ func main() {
 			panic(err)
 		}
 		fmt.Println(top)
+		*/
 
 		// Logs
 		fmt.Println("")
