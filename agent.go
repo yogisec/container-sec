@@ -58,7 +58,7 @@ func main() {
 	for _, container := range containers {
 
 		fmt.Println("######## Looping Through Containers Pulling Data #########")
-		containerDetails := GetContainerData(container.ID)
+		containerDetails := L.GetContainerData(container.ID)
 
 		/*
 			fmt.Println("---- Container HOSTCONFIG ----")
