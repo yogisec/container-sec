@@ -66,7 +66,7 @@ func main() {
 		fmt.Println(platform)
 
 		apparmor := containerInfo.AppArmorProfile
-		fmt.Prinf("AppArmor Profile: ")
+		fmt.Printf("AppArmor Profile: ")
 		fmt.Println(apparmor)
 
 		stateRunning := containerInfo.State.Running
