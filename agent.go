@@ -59,6 +59,7 @@ func main() {
 
 		fmt.Println("######## Looping Through Containers Pulling Data #########")
 		containerDetails := L.GetContainerData(container.ID)
+		fmt.Println("All Done With Container " + containerDetails)
 
 		/*
 			fmt.Println("---- Container HOSTCONFIG ----")
