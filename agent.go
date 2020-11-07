@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"io"
 	"log"
@@ -233,8 +234,12 @@ func main() {
 			fmt.Println(a)
 		}
 
+		mac1 := as[0]
 		fmt.Printf("Firt Mac: ")
-		fmt.Println(as[0])
+		fmt.Println(mac1)
+		aid := sha256.Sum256([]byte(mac1))
+		fmt.Printf("AID: ")
+		fmt.Println(aid)
 
 	}
 }
