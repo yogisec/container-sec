@@ -16,10 +16,11 @@ import (
 )
 
 type containerData struct {
-	ContainerName string `json:"containername"`
-	Platform      string `json:"platform"`
-	CurrentStatus string `json:"status"`
-	Image         string `json:"imagename"`
+	ContainerName string   `json:"ContainerName"`
+	Platform      string   `json:"Platform"`
+	CurrentStatus string   `json:"Status"`
+	Image         string   `json:"ImageName"`
+	RunCommand    []string `json:"RunCommand"`
 }
 
 // GetContainerData pulls configuration data for the running containers
@@ -142,7 +143,13 @@ func GetContainerData(containerID string) string {
 		Image string `json:"imagename"`
 		}
 	*/
-	contData := &containerData{ContainerName: friendlyName, Platform: platform, CurrentStatus: currentStatus, Image: configImage}
+	contData := &containerData{
+		ContainerName: friendlyName,
+		Platform:      platform,
+		CurrentStatus: currentStatus,
+		Image:         configImage,
+		RunCommand:    runCommand,
+	}
 
 	e, err := json.Marshal(contData)
 	if err != nil {
