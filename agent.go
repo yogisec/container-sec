@@ -246,6 +246,7 @@ func main() {
 		s := as[0]
 		sha256 := sha256.Sum256([]byte(s))
 		fmt.Printf("%x\n", sha256)
+		fmt.Println(reflect.TypeOf(sha256))
 
 	}
 }
