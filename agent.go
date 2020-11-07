@@ -243,5 +243,9 @@ func main() {
 		fmt.Printf("AID: ")
 		fmt.Println(reflect.TypeOf(aid))
 
+		s := as[0]
+		sha256 := sha256.Sum256([]byte(s))
+		fmt.Printf("%x\n", sha256)
+
 	}
 }
