@@ -233,5 +233,8 @@ func main() {
 			fmt.Println(a)
 		}
 
+		fmt.Printf("Firt Mac: ")
+		fmt.Println(as[0])
+
 	}
 }
