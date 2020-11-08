@@ -87,6 +87,9 @@ func containerDetailPolling() {
 	}
 }
 
+func agenthealth(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "up")
+}
 func main() {
 	// Get Mac Addresses
 	as, err := getMacAddr()
@@ -101,6 +104,6 @@ func main() {
 
 	go containerDetailPolling()
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", agenthealth)
 	http.ListenAndServe(":8080", nil)
 }
