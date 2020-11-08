@@ -89,6 +89,18 @@ func GetContainerData(containerID string) *ContainerData {
 
 	// fmt.Println(logString)
 
+	// Top
+	/*
+		fmt.Println("")
+		fmt.Println("---- Container TOP ----")
+		arguments := []string{"ps"}
+		top, err := cli.ContainerTop(ctx, container.ID, arguments)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(top)
+	*/
+
 	portBindings := containerInfo.HostConfig.PortBindings
 	fmt.Printf("Port Bindings: ")
 	fmt.Println(portBindings)

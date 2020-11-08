@@ -29,8 +29,8 @@ import (
 */
 
 type fullContainerDetails struct {
-	ContainerID      string           `json:"ContainerID"`
-	ContainerDetails containerDetails `json:"ContainerDetails"`
+	ContainerID      string        `json:"ContainerID"`
+	ContainerDetails ContainerData `json:"ContainerDetails"`
 }
 
 func getMacAddr() ([]string, error) {
@@ -80,17 +80,6 @@ func main() {
 		fullDetails = append(fullDetails, fullContainerDetails{"ContainerID": container.ID, "ContainerDetails": containerDetails})
 		fmt.Println("All Done With Container " + container.ID)
 
-		// Top
-		/*
-			fmt.Println("")
-			fmt.Println("---- Container TOP ----")
-			arguments := []string{"ps"}
-			top, err := cli.ContainerTop(ctx, container.ID, arguments)
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(top)
-		*/
 	}
 
 	containerDataJSON, err := json.Marshal(fullDetails)
