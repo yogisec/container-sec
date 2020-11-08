@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -48,10 +49,45 @@ func getMacAddr() ([]string, error) {
 	return as, nil
 }
 
-func main() {
-	var fullDetails []fullContainerDetails
+func containerDetailPolling() {
+	for {
+		time.Sleep(30 * time.Second)
 
-	// Get Mac Address
+		var fullDetails []fullContainerDetails
+
+		ctx := context.Background()
+		cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+		if err != nil {
+			panic(err)
+		}
+
+		containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
+		if err != nil {
+			panic(err)
+		}
+
+		for _, container := range containers {
+
+			fmt.Println("######## Looping Through Containers Pulling Data #########")
+			containerDetails := L.GetContainerData(container.ID)
+
+			fullDetails = append(fullDetails, fullContainerDetails{ContainerID: container.ID, ContainerDetails: containerDetails})
+			fmt.Println("All Done With Container " + container.ID)
+
+		}
+
+		containerDataJSON, err := json.Marshal(fullDetails)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(string(containerDataJSON))
+
+		fmt.Println("All done. See you in 30 seconds")
+	}
+}
+
+func main() {
+	// Get Mac Addresses
 	as, err := getMacAddr()
 	if err != nil {
 		log.Fatal(err)
@@ -59,35 +95,9 @@ func main() {
 
 	mac1 := as[0]
 	// fmt.Println(reflect.TypeOf(mac1))
-	aid := sha256.Sum256([]byte(mac1))
+	aid := sha256.Sum256([]byte(mac1)) // would prefer this to be a backup way to generate aid...would prefer serial (dmidecode) method
 	fmt.Printf("AID: %x\n", aid)
 
-	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-	if err != nil {
-		panic(err)
-	}
+	go containerDetailPolling()
 
-	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
-	if err != nil {
-		panic(err)
-	}
-
-	for _, container := range containers {
-
-		fmt.Println("######## Looping Through Containers Pulling Data #########")
-		containerDetails := L.GetContainerData(container.ID)
-
-		fullDetails = append(fullDetails, fullContainerDetails{ContainerID: container.ID, ContainerDetails: containerDetails})
-		fmt.Println("All Done With Container " + container.ID)
-
-	}
-
-	containerDataJSON, err := json.Marshal(fullDetails)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(string(containerDataJSON))
-
-	fmt.Println("All Done")
 }
