@@ -29,8 +29,8 @@ import (
 */
 
 type fullContainerDetails struct {
-	ContainerID      string          `json:"ContainerID"`
-	ContainerDetails L.ContainerData `json:"ContainerDetails"`
+	ContainerID      string           `json:"ContainerID"`
+	ContainerDetails *L.ContainerData `json:"ContainerDetails"`
 }
 
 func getMacAddr() ([]string, error) {
