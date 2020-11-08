@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -28,7 +29,7 @@ import (
 */
 
 type fullContainerDetails struct {
-	ContainerID string `json:"ContainerID"`
+	ContainerID      string           `json:"ContainerID"`
 	ContainerDetails containerDetails `json:"ContainerDetails"`
 }
 
@@ -76,7 +77,7 @@ func main() {
 
 		fmt.Println("######## Looping Through Containers Pulling Data #########")
 		containerDetails := L.GetContainerData(container.ID)
-		fullDetails = append(fullDetails, fullContainerDetails{"ContainerID": container.ID, containerDetails)
+		fullDetails = append(fullDetails, fullContainerDetails{"ContainerID": container.ID, "ContainerDetails": containerDetails})
 		fmt.Println("All Done With Container " + container.ID)
 
 		// Top
