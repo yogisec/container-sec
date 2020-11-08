@@ -102,7 +102,7 @@ func main() {
 	aid := sha256.Sum256([]byte(mac1)) // would prefer this to be a backup way to generate aid...would prefer serial (dmidecode) method
 	fmt.Printf("AID: %x\n", aid)
 
-	go containerDetailPolling()
+	go containerDetailPolling() // https://gist.github.com/ryanfitz/4191392#file-polling-go
 
 	http.HandleFunc("/", agenthealth)
 	http.ListenAndServe(":8080", nil)
