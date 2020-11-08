@@ -13,28 +13,31 @@ import (
 	"github.com/docker/docker/client"
 )
 
-type containerData struct {
-	ContainerName string   `json:"ContainerName"`
-	Platform      string   `json:"Platform"`
-	AppArmor      string   `json:"AppArmor"`
-	CurrentStatus string   `json:"Status"`
-	Pid           int      `json:"Pid"`
-	Privleged     bool     `json:"Privleged"`
-	CapAdd        []string `json:"CapAdd"`
-	CapDrop       []string `json:"CapDrop"`
-	Image         string   `json:"ImageName"`
-	ImageHash     string   `json:"ImageHash"`
-	RunCommand    []string `json:"RunCommand"`
-	Command       []string `json:"Command"`
-	EntryPoint    []string `json:"EntryPoint"`
-	TTY           bool     `json:"TTY"`
-	CreatedDate   string   `json:"CreatedDate"`
-	WorkingDir    string   `json:"WorkingDir"`
-	Logs          string   `json:"Logs"`
+// ContainerData is returned after each iteration
+type ContainerData struct {
+	ContainerName string                 `json:"ContainerName"`
+	Platform      string                 `json:"Platform"`
+	AppArmor      string                 `json:"AppArmor"`
+	CurrentStatus string                 `json:"Status"`
+	Pid           int                    `json:"Pid"`
+	Privleged     bool                   `json:"Privleged"`
+	CapAdd        []string               `json:"CapAdd"`
+	CapDrop       []string               `json:"CapDrop"`
+	Image         string                 `json:"ImageName"`
+	ImageHash     string                 `json:"ImageHash"`
+	RunCommand    []string               `json:"RunCommand"`
+	Command       []string               `json:"Command"`
+	EntryPoint    []string               `json:"EntryPoint"`
+	TTY           bool                   `json:"TTY"`
+	CreatedDate   string                 `json:"CreatedDate"`
+	WorkingDir    string                 `json:"WorkingDir"`
+	Logs          string                 `json:"Logs"`
+	Mounts        []string               `json:"Mounts"`
+	PortBindings  map[string]interface{} `json:"PortBindings"`
 }
 
 // GetContainerData pulls configuration data for the running containers
-func GetContainerData(containerID string) string {
+func GetContainerData(containerID string) *ContainerData {
 	fmt.Println("Container ID: " + containerID)
 
 	ctx := context.Background()
@@ -104,16 +107,8 @@ func GetContainerData(containerID string) string {
 	fmt.Printf("Mounts: ")
 	fmt.Println(mounts)
 
-	/*
-		type ContainerData struct {
-		ContainerName string `json:"containername"`
-		Platform string `json:"platform"`
-		CurrentStatus string `json:"status"`
-		Image string `json:"imagename"`
-		}
-	*/
-
-	contData := &containerData{
+	// Pull associate the variables with the containerData struct
+	contData := &ContainerData{
 		ContainerName: friendlyName,
 		Platform:      platform,
 		AppArmor:      apparmor,
@@ -133,13 +128,19 @@ func GetContainerData(containerID string) string {
 		Logs:          logString,
 	}
 
-	e, err := json.Marshal(contData)
+	// Turn it all into JSON
+
+	containerDataJSON, err := json.Marshal(contData)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(string(e))
+	fmt.Println(string(containerDataJSON))
 
-	return containerID
+	// Return marshalled json
+	// return containerDataJSON
+
+	// Returned the raw unmarshalled json
+	return contData
 }
 
 // Dothing I guess all exported functions need a comment explaining why?
