@@ -90,6 +90,7 @@ func containerDetailPolling() {
 func agenthealth(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "up")
 }
+
 func main() {
 	// Get Mac Addresses
 	as, err := getMacAddr()

@@ -115,7 +115,7 @@ func GetContainerData(containerID string) *ContainerData {
 	fmt.Printf("Mounts: ")
 	fmt.Println(mounts)
 
-	// Pull associate the variables with the containerData struct
+	// Build the struct
 	contData := &ContainerData{
 		ContainerName: friendlyName,
 		Platform:      platform,

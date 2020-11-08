@@ -1,0 +1,4 @@
+# asdf
+apiserver: 1.1.1.1
+# aws, baremetal
+deployment: aws
