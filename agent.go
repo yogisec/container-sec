@@ -78,7 +78,7 @@ func main() {
 		fmt.Println("######## Looping Through Containers Pulling Data #########")
 		containerDetails := L.GetContainerData(container.ID)
 
-		fullDetails = append(fullDetails, fullContainerDetails{"ContainerID": container.ID})
+		fullDetails = append(fullDetails, fullContainerDetails{ContainerID: container.ID, ContainerDetails: containerDetails})
 		fmt.Println("All Done With Container " + container.ID)
 
 	}
