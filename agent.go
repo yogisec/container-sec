@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"time"
 
 	"github.com/docker/docker/api/types"
@@ -100,4 +101,6 @@ func main() {
 
 	go containerDetailPolling()
 
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
 }
